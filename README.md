@@ -6,13 +6,13 @@ A minimal bare-metal Rust launchpad for the STM32G474RE microcontroller.
 
 - [Rust](https://www.rust-lang.org/) (with the `thumbv7em-none-eabihf` target)
 - [probe-rs](https://probe.rs/) (for flashing and running on hardware)
-- [ARM GCC Toolchain](https://developer.arm.com/Tools%20and%20Software/GNU%20Toolchain)(brew available [here](https://formulae.brew.sh/cask/gcc-arm-embedded))
+- [ARM GCC Toolchain](https://developer.arm.com/Tools%20and%20Software/GNU%20Toolchain) (brew available [here](https://formulae.brew.sh/cask/gcc-arm-embedded))
 - An STM32G474RE development board and a compatible debug probe
 
 ### Rust Crates
 
 - `cortex-m-rt` - Cortex-M runtime startup and interrupt handling
-- `panic-halt` - Halt-on-panic handler for `no_std` environments
+- `panic-halt` - Halt-on-panic handler for `no_std` environments (e.g. Embedded Rust)
 
 ## Installation
 
@@ -56,3 +56,12 @@ cargo run
 ```
 
 This will compile the project, flash it to the chip, and run the debugger. The debugger is configured in `.cargo/config.toml` to use `probe-rs run --chip STM32G474RE`.
+
+## Notes
+
+- I recommend installing [cargo-binutils](https://crates.io/crates/cargo-binutils) and check the built firmware file to ensure your .vector_table points to flash and .data points to RAM.
+```sh
+cargo size -- -Ax
+```
+- Cargo binaries may be added to your PATH by default after installation, but I had to manually add them on macOS.
+- Be sure to configure your IDE/editor settings to use ONLY the target architecture for rust analyzer otherwise it will show errors that may not be relevant to the microcontroller. Zed settings are provided in this repo.
