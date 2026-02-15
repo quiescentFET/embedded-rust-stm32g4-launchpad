@@ -38,12 +38,18 @@ A minimal bare-metal Rust launchpad for the STM32G474RE microcontroller.
    export PATH="$PATH:$HOME/.cargo/bin"
    ```
 
-4. Clone the repository and build:
+4. Install GDB:
+
+   ```sh
+   brew install gdb
+   ```
+
+5. Clone the repository and build:
 
    ```sh
    git clone <repo-url>
    cd embedded-rust-stm32g4-launchpad
-   cd  module_X
+   cd  module/XXX
    cargo build
    ```
 
