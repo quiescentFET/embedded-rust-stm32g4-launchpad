@@ -1,11 +1,12 @@
-# minimal_G474
+# Launchpad for Embedded Rust on STM32(G474RE)
 
-A minimal bare-metal Rust project for the STM32G474RE microcontroller.
+A minimal bare-metal Rust launchpad for the STM32G474RE microcontroller.
 
 ## Dependencies
 
 - [Rust](https://www.rust-lang.org/) (with the `thumbv7em-none-eabihf` target)
 - [probe-rs](https://probe.rs/) (for flashing and running on hardware)
+- [ARM GCC Toolchain](https://developer.arm.com/Tools%20and%20Software/GNU%20Toolchain)(brew available [here](https://formulae.brew.sh/cask/gcc-arm-embedded))
 - An STM32G474RE development board and a compatible debug probe
 
 ### Rust Crates
@@ -32,13 +33,18 @@ A minimal bare-metal Rust project for the STM32G474RE microcontroller.
    ```sh
    cargo install probe-rs-tools
    ```
+  Be sure to add cargo binaries to your PATH in .zshrc file so you can use these tools:
+   ```sh
+   export PATH="$PATH:$HOME/.cargo/bin"
+   ```
 
 4. Clone the repository and build:
 
    ```sh
    git clone <repo-url>
-   cd minimal_G474
-   cargo build
+   cd embedded-rust-stm32g4-launchpad
+   cd  module_X
+   cargo buildx
    ```
 
 ## Running
