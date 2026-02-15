@@ -44,7 +44,7 @@ A minimal bare-metal Rust launchpad for the STM32G474RE microcontroller.
    git clone <repo-url>
    cd embedded-rust-stm32g4-launchpad
    cd  module_X
-   cargo buildx
+   cargo build
    ```
 
 ## Running
@@ -55,4 +55,4 @@ Connect your STM32G474RE board via a debug probe, then:
 cargo run
 ```
 
-This will compile the project, flash it to the chip, and begin execution. The runner is configured in `.cargo/config.toml` to use `probe-rs run --chip STM32G474RE`.
+This will compile the project, flash it to the chip, and run the debugger. The debugger is configured in `.cargo/config.toml` to use `probe-rs run --chip STM32G474RE`.
