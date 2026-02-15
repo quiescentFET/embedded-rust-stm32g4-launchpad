@@ -59,9 +59,9 @@ This will compile the project, flash it to the chip, and run the debugger. The d
 
 ## Notes
 
-- I recommend installing [cargo-binutils](https://crates.io/crates/cargo-binutils) and check the built firmware file to ensure your .vector_table points to flash and .data points to RAM.
-```sh
-cargo size -- -Ax
-```
+- I recommend installing [cargo-binutils](https://crates.io/crates/cargo-binutils) and check the built firmware file via command below to ensure your .vector_table points to flash and .data points to RAM.
+  ```sh
+  cargo size -- -Ax
+  ```
 - Cargo binaries may be added to your PATH by default after installation, but I had to manually add them on macOS.
-- Be sure to configure your IDE/editor settings to use ONLY the target architecture for rust analyzer otherwise it will show errors that may not be relevant to the microcontroller. Zed settings are provided in this repo.
+- Be sure to configure your IDE/editor settings to use ONLY the target architecture for rust_analyzer otherwise it will show errors that may not be relevant to the microcontroller. Settings for the Zed editor are provided in this repo.
