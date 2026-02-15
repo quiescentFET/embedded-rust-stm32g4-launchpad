@@ -33,10 +33,10 @@ A minimal bare-metal Rust launchpad for the STM32G474RE microcontroller.
    ```sh
    cargo install probe-rs-tools
    ```
-  Be sure to add cargo binaries to your PATH in .zshrc file so you can use these tools:
-   ```sh
-   export PATH="$PATH:$HOME/.cargo/bin"
-   ```
+    Be sure to add cargo binaries to your PATH in .zshrc file so you can use these tools:
+      ```sh
+      export PATH="$PATH:$HOME/.cargo/bin"
+      ```
 
 4. Install GDB:
 
