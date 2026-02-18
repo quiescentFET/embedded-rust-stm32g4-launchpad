@@ -1,10 +1,24 @@
 #![no_std]
 #![no_main]
 
-use cortex_m_rt::entry;
-use panic_halt as _;
+use defmt::info;
+use defmt_rtt as _;
+use embassy_executor::Spawner;
+use panic_probe as _;
 
-#[entry] // Requires function signature never returns so -> ! does that
-fn main() -> ! {
-    loop {}
+#[defmt::panic_handler]
+fn panic() -> ! {
+    cortex_m::asm::udf()
 }
+
+#[embassy_executor::main]
+async fn main(_spawner: Spawner) {
+    info!("loading config...");
+    let config = embassy_stm32::Config::default();
+    info!("config loaded!");
+    loop {
+        info!("Loop running!");
+    }
+}
+
+// TODO Get info! defmt to show on probe-rs/console
