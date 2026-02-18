@@ -1,7 +1,0 @@
-/* Linker script for the STM32G474RE */
-MEMORY
-{
-  FLASH : ORIGIN = 0x08000000, LENGTH = 512K
-  RAM   : ORIGIN = 0x20000000, LENGTH = 96K  /* Remaining 32K is CCM */
-  CCM   : ORIGIN = 0x20018000, LENGTH = 32K
-}
