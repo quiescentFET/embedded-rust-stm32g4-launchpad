@@ -20,5 +20,3 @@ async fn main(_spawner: Spawner) {
         info!("Loop running!");
     }
 }
-
-// TODO Get info! defmt to show on probe-rs/console

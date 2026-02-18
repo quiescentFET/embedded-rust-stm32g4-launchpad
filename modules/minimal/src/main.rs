@@ -14,11 +14,8 @@ fn panic() -> ! {
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     info!("loading config...");
-    let config = embassy_stm32::Config::default();
     info!("config loaded!");
     loop {
         info!("Loop running!");
     }
 }
-
-// TODO Get info! defmt to show on probe-rs/console
