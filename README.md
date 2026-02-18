@@ -71,6 +71,6 @@ defmt log output will appear in your terminal via RTT. The log level is set to `
   ```sh
   cargo size -- -A
   ```
-  This ensures `.vector_table` points to flash and `.data` points to RAM.
+  Ensure `.vector_table` points to flash and `.data` points to RAM.
 - Cargo binaries may not be on your PATH by default on macOS — add them manually if needed.
 - Configure your IDE/editor to use ONLY the target architecture for `rust-analyzer`, otherwise it will show errors irrelevant to the microcontroller. Settings for the Zed editor are provided in this repo.
