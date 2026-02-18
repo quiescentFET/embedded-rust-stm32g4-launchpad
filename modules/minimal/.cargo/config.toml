@@ -8,7 +8,7 @@ rustflags = [
 ]
 
 [target.'cfg(all(target_arch = "arm", target_os = "none"))']
-runner = "probe-rs run --chip STM32G474RE"
+runner = "probe-rs run --chip STM32G474RE --connect-under-reset"
 
 [env]
 DEFMT_LOG = "info"
