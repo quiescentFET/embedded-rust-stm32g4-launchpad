@@ -1,18 +1,22 @@
 # Launchpad for Embedded Rust on STM32(G474RE)
 
-A minimal bare-metal Rust launchpad for the STM32G474RE microcontroller.
+A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, using the Embassy framework.
 
 ## Dependencies
 
 - [Rust](https://www.rust-lang.org/) (with the `thumbv7em-none-eabihf` target)
 - [probe-rs](https://probe.rs/) (for flashing and running on hardware)
-- [ARM GCC Toolchain](https://developer.arm.com/Tools%20and%20Software/GNU%20Toolchain) (brew available [here](https://formulae.brew.sh/cask/gcc-arm-embedded))
 - An STM32G474RE development board and a compatible debug probe
 
 ### Rust Crates
 
+- `cortex-m` - Low-level Cortex-M peripheral access (with `critical-section-single-core`)
 - `cortex-m-rt` - Cortex-M runtime startup and interrupt handling
-- `panic-halt` - Halt-on-panic handler for `no_std` environments (e.g. Embedded Rust)
+- `embassy-executor` - Async executor for embedded systems
+- `embassy-stm32` - Embassy HAL for STM32 (configured for `stm32g474re`)
+- `defmt` - Efficient logging framework for embedded systems
+- `defmt-rtt` - RTT transport for defmt log output
+- `panic-probe` - Panic handler that prints via defmt over RTT
 
 ## Installation
 
@@ -33,23 +37,19 @@ A minimal bare-metal Rust launchpad for the STM32G474RE microcontroller.
    ```sh
    cargo install probe-rs-tools
    ```
-    Be sure to add cargo binaries to your PATH in .zshrc file so you can use these tools:
-      ```sh
-      export PATH="$PATH:$HOME/.cargo/bin"
-      ```
 
-4. Install GDB:
+   Be sure to add cargo binaries to your PATH in `.zshrc`:
 
    ```sh
-   brew install gdb
+   export PATH="$PATH:$HOME/.cargo/bin"
    ```
 
-5. Clone the repository and build:
+4. Clone the repository and navigate to a module:
 
    ```sh
    git clone <repo-url>
    cd embedded-rust-stm32g4-launchpad
-   cd  module/XXX
+   cd modules/minimal
    cargo build
    ```
 
@@ -61,13 +61,16 @@ Connect your STM32G474RE board via a debug probe, then:
 cargo run
 ```
 
-This will compile the project, flash it to the chip, and run the debugger. The debugger is configured in `.cargo/config.toml` to use `probe-rs run --chip STM32G474RE`.
+This compiles the project, flashes it to the chip, and starts the probe-rs runner. The runner is configured in `.cargo/config.toml` to use `probe-rs run --chip STM32G474RE`.
+
+defmt log output will appear in your terminal via RTT. The log level is set to `info` by default (configured via `DEFMT_LOG = "info"` in `.cargo/config.toml`).
 
 ## Notes
 
-- I recommend installing [cargo-binutils](https://crates.io/crates/cargo-binutils) and check the built firmware file via command below to ensure your .vector_table points to flash and .data points to RAM.
+- I recommend installing [cargo-binutils](https://crates.io/crates/cargo-binutils) and checking the built firmware via:
   ```sh
-  cargo size -- -Ax
+  cargo size -- -A
   ```
-- Cargo binaries may be added to your PATH by default after installation, but I had to manually add them on macOS.
-- Be sure to configure your IDE/editor settings to use ONLY the target architecture for rust_analyzer otherwise it will show errors that may not be relevant to the microcontroller. Settings for the Zed editor are provided in this repo.
+  This ensures `.vector_table` points to flash and `.data` points to RAM.
+- Cargo binaries may not be on your PATH by default on macOS — add them manually if needed.
+- Configure your IDE/editor to use ONLY the target architecture for `rust-analyzer`, otherwise it will show errors irrelevant to the microcontroller. Settings for the Zed editor are provided in this repo.
