@@ -14,8 +14,7 @@ fn panic() -> ! {
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     info!("loading config...");
+    let config = embassy_stm32::Config::default(); // Need to initialize the chip for compilation.
     info!("config loaded!");
-    loop {
-        info!("Loop running!");
-    }
+    loop {}
 }
