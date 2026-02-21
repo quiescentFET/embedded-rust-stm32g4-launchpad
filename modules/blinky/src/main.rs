@@ -10,40 +10,52 @@ fn panic() -> ! {
     cortex_m::asm::udf()
 }
 
+//*** BINDINGS & VARS ***//
+
 // Init the array of delay values (ms)
 const DELAY_LIST: [u64; 3] = [500, 250, 125];
 
 // Init global variable as a mutex to prevent multiple access
 static DELAY: CriticalSectionMutex<u64> = CriticalSectionMutex::new(DELAY_LIST[0]); // CritSecMutex handles shared references
 
-// Init the interrupt handler for EXTI13 (for button on PC13 pin)
+// Bind EXTI13's interrupts to a handler (for button on PC13 pin)
 bind_interrupts!(struct Irqs {
     EXTI15_10 => InterruptHandler<EXTI15_10>;
 });
+//*** /BINDINGS & VARS ***//
+
+//*** MAIN ***//
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
+    // Load config (do once only)
     info!("loading config...");
     let p = embassy_stm32::init(Default::default()); // Initialize the peripherals
     info!("config loaded!");
 
-    // Init B1 button with external interrupt
-    let button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs);
+    // Init B1 button with external interrupt and its handler
+    let button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs); // Functions without "mut"??
+
+    // Init LD2 LED at PA5
+    let blinky = Output::new(p.PA5, Level::Low, Speed::Low); // Functions without "mut"??
 
     //Spawn timing advancer task
     _spawner.spawn(advance_timing(button)).unwrap();
 
     // Spawn Blinky task with pin for LD2
-    _spawner.spawn(blink_led(p.PA5)).unwrap();
+    _spawner.spawn(blink_led(blinky)).unwrap();
 }
+//*** /MAIN ***//
+
+//*** TASKS ***//
 
 // Blink LED Task
 #[embassy_executor::task]
-async fn blink_led(led: Peri<'static, PA5>) {
-    // Init LD2 LED
-    let mut blinky = Output::new(led, Level::Low, Speed::Low);
+async fn blink_led(mut blinky: Output<'static>) {
+    // Print
     info!("Blinky Started!");
 
+    // Start blinking
     loop {
         // Access delay value by disabling interrupts, then borrowing.
         Timer::after_millis(critical_section::with(|cs| *DELAY.borrow(cs))).await;
@@ -64,3 +76,4 @@ async fn advance_timing(mut button: ExtiInput<'static>) {
         info!("Button pressed!");
     }
 }
+//*** /TASKS ***//
