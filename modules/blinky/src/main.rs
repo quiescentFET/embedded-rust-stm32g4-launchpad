@@ -16,7 +16,8 @@ fn panic() -> ! {
 const DELAY_LIST: [u64; 3] = [500, 250, 125];
 
 // Init global variable as a mutex to prevent multiple access
-static DELAY: CriticalSectionMutex<u64> = CriticalSectionMutex::new(DELAY_LIST[0]); // CritSecMutex handles shared references
+// Cell<u64> allows interior mutability (get/set) within the critical section
+static DELAY: CriticalSectionMutex<Cell<u64>> = CriticalSectionMutex::new(Cell::new(DELAY_LIST[0]));
 
 // Bind EXTI13's interrupts to a handler (for button on PC13 pin)
 bind_interrupts!(struct Irqs {
@@ -34,10 +35,10 @@ async fn main(_spawner: Spawner) {
     info!("config loaded!");
 
     // Init B1 button with external interrupt and its handler
-    let button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs); // Functions without "mut"??
+    let button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs);
 
     // Init LD2 LED at PA5
-    let blinky = Output::new(p.PA5, Level::Low, Speed::Low); // Functions without "mut"??
+    let blinky = Output::new(p.PA5, Level::Low, Speed::Low);
 
     //Spawn timing advancer task
     _spawner.spawn(advance_timing(button)).unwrap();
@@ -57,8 +58,8 @@ async fn blink_led(mut blinky: Output<'static>) {
 
     // Start blinking
     loop {
-        // Access delay value by disabling interrupts, then borrowing.
-        Timer::after_millis(critical_section::with(|cs| *DELAY.borrow(cs))).await;
+        // Read delay value inside a critical section
+        Timer::after_millis(critical_section::with(|cs| DELAY.borrow(cs).get())).await;
         blinky.toggle();
     }
 }
@@ -66,13 +67,13 @@ async fn blink_led(mut blinky: Output<'static>) {
 // Advance Timing Task (button press)
 #[embassy_executor::task]
 async fn advance_timing(mut button: ExtiInput<'static>) {
-    // Init cycling interator for delay list
-    // let mut delay_iter = DELAY_LIST.iter().cycle();
+    // Init cycling iterator for delay list
+    let mut delay_iter = DELAY_LIST.iter().cycle();
 
     loop {
         button.wait_for_rising_edge().await;
-        // let delay_ref = DELAY.get_mut();
-        // delay_ref =
+        // Write new delay value inside a critical section
+        critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
         info!("Button pressed!");
     }
 }

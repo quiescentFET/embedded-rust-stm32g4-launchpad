@@ -1,4 +1,5 @@
 // pub use core::cell::RefCell; // Not needed, embassy's CritSecMutex handles mutable references
+pub use core::cell::Cell; // To allow immutable static to be mutated safely
 pub use defmt::info;
 pub use defmt_rtt as _;
 pub use embassy_executor::Spawner;
