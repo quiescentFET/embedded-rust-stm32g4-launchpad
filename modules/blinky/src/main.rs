@@ -1,33 +1,22 @@
 #![no_std]
 #![no_main]
 
-// use core::cell::RefCell; // Not needed, embassy's mutex handles mutability
-use defmt::info;
-use defmt_rtt as _;
-use embassy_executor::Spawner;
-use embassy_stm32::Peri;
-use embassy_stm32::bind_interrupts;
-use embassy_stm32::exti::{ExtiInput, InterruptHandler}; // Import external interrupt wrapper for inputs
-use embassy_stm32::gpio::{Level, Output, Pull, Speed};
-use embassy_stm32::interrupt::typelevel::EXTI15_10; // Import interrupt typelevel that button will bind to
-use embassy_stm32::peripherals::{EXTI13, PA5}; // Use a concrete peripheral type rather than p.PA5
-use embassy_time::Timer;
-// use embassy_sync::mutex::Mutex; // Not needed, use CriticalSectionMutex instead
-use embassy_sync::blocking_mutex::CriticalSectionMutex; // use CritSecMutex over Thread/Noop due to interruptions from GPIO (button press)
-use panic_probe as _;
+mod imports;
+use imports::*;
 
+// Init the defmt panic handler, uses panic_probe's handler with defmt
 #[defmt::panic_handler]
 fn panic() -> ! {
     cortex_m::asm::udf()
 }
 
-// Init the atomic variable with the first delay value
+// Init the array of delay values (ms)
 const DELAY_LIST: [u64; 3] = [500, 250, 125];
 
-// Init the CURR_DELAY as a Mutex to prevent multiple access, and use a RefCell to allow mutability through a shared reference
-static DELAY: CriticalSectionMutex<u64> = CriticalSectionMutex::new(DELAY_LIST[0]);
+// Init global variable as a mutex to prevent multiple access
+static DELAY: CriticalSectionMutex<u64> = CriticalSectionMutex::new(DELAY_LIST[0]); // CritSecMutex handles shared references
 
-// Init the interrupt handler for EXTI13
+// Init the interrupt handler for EXTI13 (for button on PC13 pin)
 bind_interrupts!(struct Irqs {
     EXTI15_10 => InterruptHandler<EXTI15_10>;
 });
@@ -39,7 +28,7 @@ async fn main(_spawner: Spawner) {
     info!("config loaded!");
 
     // Init B1 button with external interrupt
-    let mut button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs);
+    let button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs);
 
     //Spawn timing advancer task
     _spawner.spawn(advance_timing(button)).unwrap();
@@ -70,7 +59,8 @@ async fn advance_timing(mut button: ExtiInput<'static>) {
 
     loop {
         button.wait_for_rising_edge().await;
-        // DELAY.get_mut() = *delay_iter.next().unwrap();
+        // let delay_ref = DELAY.get_mut();
+        // delay_ref =
         info!("Button pressed!");
     }
 }
