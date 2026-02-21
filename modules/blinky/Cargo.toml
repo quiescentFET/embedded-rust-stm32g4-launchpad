@@ -13,3 +13,4 @@ embassy-stm32 = { version = "0.5.0", features = ["defmt", "memory-x", "stm32g474
 embassy-time = "0.5.0"
 embassy-sync = { version = "0.7.2", features = ["defmt"] }
 panic-probe = { version = "1.0.0", features = ["print-defmt"] }
+critical-section = "1.2.0"
