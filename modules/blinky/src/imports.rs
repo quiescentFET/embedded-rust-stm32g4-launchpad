@@ -1,5 +1,4 @@
-// pub use core::cell::RefCell; // Not needed, embassy's mutex handles mutability
-
+// pub use core::cell::RefCell; // Not needed, embassy's CritSecMutex handles mutable references
 pub use defmt::info;
 pub use defmt_rtt as _;
 pub use embassy_executor::Spawner;
