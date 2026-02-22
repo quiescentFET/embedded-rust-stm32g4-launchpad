@@ -1,6 +1,2 @@
 .DS_Store
-/minimal/Cargo.lock
-/blinky/Cargo.lock
-/minimal/target
-/blinky/target
 /target

@@ -8,7 +8,7 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
 - [probe-rs](https://probe.rs/) (for flashing and running on hardware)
 - An STM32G474RE development board and a compatible debug probe
 
-## Installation
+## Setup
 
 1. Install Rust via [rustup](https://rustup.rs/):
 
@@ -39,8 +39,7 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
    ```sh
    git clone <repo-url>
    cd embedded-rust-stm32g4-launchpad
-   cd minimal
-   cargo build
+   cargo build --bin blinky
    ```
 
 ## Running
@@ -48,7 +47,7 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
 Connect your STM32G474RE board via a debug probe, then:
 
 ```sh
-cargo run
+cargo run --bin blinky
 ```
 
 This compiles the project, flashes it to the chip, and starts the probe-rs runner. The runner is configured in `.cargo/config.toml` to use `probe-rs run --chip STM32G474RE`.
