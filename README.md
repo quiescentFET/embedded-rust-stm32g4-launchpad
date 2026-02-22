@@ -37,7 +37,7 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
 4. Clone the repository:
 
    ```sh
-   git clone <repo-url>
+   git clone https://github.com/quiescentFET/embedded-rust-stm32g4-launchpad.git
    cd embedded-rust-stm32g4-launchpad
    ```
 
