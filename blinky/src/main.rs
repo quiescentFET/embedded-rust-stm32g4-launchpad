@@ -31,7 +31,6 @@ bind_interrupts!(struct Irqs {
 async fn main(_spawner: Spawner) {
     // Load config (do once only)
     info!("loading config...");
-
     let p = embassy_stm32::init(Default::default()); // Initialize the peripherals
     info!("config loaded!");
 
