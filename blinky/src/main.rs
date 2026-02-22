@@ -13,7 +13,7 @@ fn panic() -> ! {
 //*** BINDINGS & VARS ***//
 
 // Init the array of delay values (ms)
-const DELAY_LIST: [u64; 3] = [500, 250, 125];
+const DELAY_LIST: [u64; 5] = [500, 250, 125, 50, 10];
 
 // Init global variable as a mutex to prevent multiple access
 // Cell<u64> allows interior mutability (get/set) within the critical section
