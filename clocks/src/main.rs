@@ -17,7 +17,6 @@ fn panic() -> ! {
 }
 
 //*** BINDINGS & VARS ***//
-
 //*** /BINDINGS & VARS ***//
 
 //*** MAIN ***//
@@ -33,13 +32,13 @@ async fn main(_spawner: Spawner) {
     });
     config.rcc.sys = rcc::Sysclk::HSE;
     let p = embassy_stm32::init(config); // Initialize the peripherals
+    info!("config loaded!");
 
     let clocks = embassy_stm32::rcc::clocks(&p.RCC);
     info!("SYSCLK: {} Hz", clocks.sys.to_hertz().unwrap().0);
     info!("HCLK:   {} Hz", clocks.hclk1.to_hertz().unwrap().0);
     info!("PCLK1:  {} Hz", clocks.pclk1.to_hertz().unwrap().0);
     info!("PCLK2:  {} Hz", clocks.pclk2.to_hertz().unwrap().0);
-    info!("config loaded!");
 }
 //*** /MAIN ***//
 
