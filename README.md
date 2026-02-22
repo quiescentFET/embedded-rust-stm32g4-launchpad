@@ -49,7 +49,7 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
    ```sh
    git clone <repo-url>
    cd embedded-rust-stm32g4-launchpad
-   cd modules/minimal
+   cd minimal
    cargo build
    ```
 
