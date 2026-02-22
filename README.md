@@ -8,16 +8,6 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
 - [probe-rs](https://probe.rs/) (for flashing and running on hardware)
 - An STM32G474RE development board and a compatible debug probe
 
-### Rust Crates
-
-- `cortex-m` - Low-level Cortex-M peripheral access (with `critical-section-single-core`)
-- `cortex-m-rt` - Cortex-M runtime startup and interrupt handling
-- `embassy-executor` - Async executor for embedded systems
-- `embassy-stm32` - Embassy HAL for STM32 (configured for `stm32g474re`)
-- `defmt` - Efficient logging framework for embedded systems
-- `defmt-rtt` - RTT transport for defmt log output
-- `panic-probe` - Panic handler that prints via defmt over RTT
-
 ## Installation
 
 1. Install Rust via [rustup](https://rustup.rs/):
