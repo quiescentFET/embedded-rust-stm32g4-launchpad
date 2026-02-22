@@ -12,7 +12,7 @@ fn panic() -> ! {
 
 //*** BINDINGS & VARS ***//
 
-// Init the array of delay values (ms)
+// Init the array of delay values (ms) that will be cycled through
 const DELAY_LIST: [u64; 5] = [500, 250, 125, 50, 10];
 
 // Init global variable as a mutex to prevent multiple access
