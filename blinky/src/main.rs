@@ -32,7 +32,6 @@ bind_interrupts!(struct Irqs {
 //*** /BINDINGS & VARS ***//
 
 //*** MAIN ***//
-
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     // Load config (do once only)
