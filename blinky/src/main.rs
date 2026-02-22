@@ -43,7 +43,7 @@ async fn main(_spawner: Spawner) {
     //Spawn timing advancer task
     _spawner.spawn(advance_timing(button)).unwrap();
 
-    // Spawn Blinky task with pin for LD2
+    // Spawn Blinky task
     _spawner.spawn(blink_led(blinky)).unwrap();
 }
 //*** /MAIN ***//
@@ -58,7 +58,7 @@ async fn blink_led(mut blinky: Output<'static>) {
 
     // Start blinking
     loop {
-        // Read delay value inside a critical section
+        // Read delay value inside a critical section and wait
         Timer::after_millis(critical_section::with(|cs| DELAY.borrow(cs).get())).await;
         blinky.toggle();
     }
@@ -68,7 +68,7 @@ async fn blink_led(mut blinky: Output<'static>) {
 #[embassy_executor::task]
 async fn advance_timing(mut button: ExtiInput<'static>) {
     // Init cycling iterator for delay list
-    let mut delay_iter = DELAY_LIST.iter().cycle();
+    let mut delay_iter = DELAY_LIST.iter().skip(1).cycle();
 
     loop {
         button.wait_for_rising_edge().await;
