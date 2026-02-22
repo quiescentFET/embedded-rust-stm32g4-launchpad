@@ -1,7 +1,8 @@
 ## Improvements
 
 1. Use of a critical section mutex is a bit overkill since only a single u64 type is modified. Additionally, it rejects button presses during read/write of it. Better to use an Atomic type instead, that way MCU will retry failed read/writes once it's able to. Will also save like 1 cycle. Massive savings.
-2. Use u32 or smaller type for delay values. At present u64 is used as that is what the timer function was expecting, but that type is not native to a 32-bit architecture. Incurring unnecessary overhead.
+2. Use u32 or smaller type for delay values. At present u64 is used as that is what the timer function was expecting, but that type is not native to a 32-bit architecture. Incurring unnecessary overhead. Perhaps checktimer driver for alternatives
+3. Needs confirmation, but assuming using internal 16MHz oscillator. Should use the more stable external 32.768KHz crystal (X2).
 
 ## Possible bugfixes
 
