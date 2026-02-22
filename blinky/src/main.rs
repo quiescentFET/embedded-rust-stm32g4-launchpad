@@ -1,3 +1,9 @@
+/*
+ * Module: Blinky
+ * Development Board: NUCLEO-G474RE (STM32G474RE)
+ * Author: quiescentFET
+ */
+
 #![no_std]
 #![no_main]
 
