@@ -34,12 +34,11 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
    export PATH="$PATH:$HOME/.cargo/bin"
    ```
 
-4. Clone the repository and navigate to a module:
+4. Clone the repository:
 
    ```sh
    git clone <repo-url>
    cd embedded-rust-stm32g4-launchpad
-   cargo build --bin blinky
    ```
 
 ## Running
