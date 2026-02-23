@@ -1,5 +1,5 @@
 /*
- * Module: Blinky
+ * Module: Blinky RTC
  * Development Board: NUCLEO-G474RE (STM32G474RE)
  * Author: quiescentFET
  */
@@ -18,7 +18,10 @@ fn panic() -> ! {
 
 //*** BINDINGS & VARS ***//
 
-// Init the array of delays (ms) that will be cycled through
+// Init the array of ticks that will be cycled through
+// Use ticks to save math (1 tick = 1/32768s, e.g. 500ms = 16384 ticks) TODO: 3
+// const DELAY_LIST: [u64; 5] = [16384, 8192, 4096, 1639, 328];
+// In milliseconds = [500, 250, 125, ~50, ~10]
 const DELAY_LIST: [u64; 5] = [500, 250, 125, 50, 10];
 
 // Init global variable as a mutex to prevent multiple access
@@ -36,7 +39,18 @@ bind_interrupts!(struct Irqs {
 async fn main(_spawner: Spawner) {
     // Load config (do once only)
     info!("loading config...");
-    let p = embassy_stm32::init(Default::default()); // Apply config and init peripherals
+    let mut config = embassy_stm32::Config::default();
+
+    // Enable 32.768KHz LSE for RTC TODO: 3
+    // config.rcc.ls = rcc::LsConfig::default_lse();
+    // Not useful atm, embassy time based on SYSCLK,need LSE time-driver
+
+    config.rcc.hse = Some(rcc::Hse {
+        freq: embassy_stm32::time::Hertz(24_000_000),
+        mode: rcc::HseMode::Oscillator,
+    }); // Write Config for HSE
+    config.rcc.sys = rcc::Sysclk::HSE; // Set HSE as the SYSCLK source
+    let p = embassy_stm32::init(config); // Apply config and init peripherals
     info!("config loaded!");
 
     // Init B1 button with external interrupt and its handler
