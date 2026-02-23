@@ -65,7 +65,6 @@ async fn blink_led(mut blinky: Output<'static>) {
     loop {
         // Read delay value inside a critical section and wait
         Timer::after_millis(critical_section::with(|cs| DELAY.borrow(cs).get())).await;
-        // Timer::after_ticks(critical_section::with(|cs| DELAY.borrow(cs).get())).await; // TODO: 3
         blinky.toggle();
     }
 }
