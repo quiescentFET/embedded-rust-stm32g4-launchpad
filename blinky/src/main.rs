@@ -36,7 +36,14 @@ bind_interrupts!(struct Irqs {
 async fn main(_spawner: Spawner) {
     // Load config (do once only)
     info!("loading config...");
-    let p = embassy_stm32::init(Default::default()); // Initialize the peripherals
+    let mut config = embassy_stm32::Config::default();
+    config.rcc.ls = rcc::LsConfig::default_lse();
+    config.rcc.hse = Some(rcc::Hse {
+        freq: embassy_stm32::time::Hertz(24_000_000),
+        mode: rcc::HseMode::Oscillator,
+    });
+    config.rcc.sys = rcc::Sysclk::HSE;
+    let p = embassy_stm32::init(config); // Initialize the peripherals
     info!("config loaded!");
 
     // Init B1 button with external interrupt and its handler
