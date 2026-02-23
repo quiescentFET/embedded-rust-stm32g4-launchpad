@@ -27,7 +27,7 @@ static DELAY: CriticalSectionMutex<Cell<u64>> = CriticalSectionMutex::new(Cell::
 
 // Bind EXTI13's interrupts to a handler (for button on PC13 pin)
 bind_interrupts!(struct Irqs {
-    EXTI15_10 => InterruptHandler<EXTI15_10>;
+    EXTI15_10 => InterruptHandler<embassy_stm32::interrupt::typelevel::EXTI15_10>;
 });
 //*** /BINDINGS & VARS ***//
 
