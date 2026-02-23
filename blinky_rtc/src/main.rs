@@ -37,20 +37,25 @@ bind_interrupts!(struct Irqs {
 //*** MAIN ***//
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
-    // Load config (do once only)
+    // Init device
     info!("loading config...");
+
+    // Load default config values
     let mut config = embassy_stm32::Config::default();
 
     // Enable 32.768KHz LSE for RTC TODO: 3
     // config.rcc.ls = rcc::LsConfig::default_lse();
-    // Not useful atm, embassy time based on SYSCLK,need LSE time-driver
+    // Not useful atm, embassy time based on SYSCLK ticks,need LSE/lptim1 time-driver
 
+    // Modify config to enable HSE and use as SYSCLK
     config.rcc.hse = Some(rcc::Hse {
         freq: embassy_stm32::time::Hertz(24_000_000),
         mode: rcc::HseMode::Oscillator,
-    }); // Write Config for HSE
-    config.rcc.sys = rcc::Sysclk::HSE; // Set HSE as the SYSCLK source
-    let p = embassy_stm32::init(config); // Apply config and init peripherals
+    });
+    config.rcc.sys = rcc::Sysclk::HSE;
+
+    // Apply config and init peipherals
+    let p = embassy_stm32::init(config);
     info!("config loaded!");
 
     // Init B1 button with external interrupt and its handler
