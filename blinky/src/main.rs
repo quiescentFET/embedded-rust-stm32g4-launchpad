@@ -88,7 +88,10 @@ async fn blink_led(mut blinky: Output<'static>) {
 #[embassy_executor::task]
 async fn advance_timing(mut button: ExtiInput<'static>) {
     // Init cycling iterator for delay list
-    let mut delay_iter = DELAY_LIST.iter().skip(1).cycle();
+    let mut delay_iter = DELAY_LIST.iter().cycle();
+
+    // Advance interator to second value since first is already in effect
+    critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
 
     loop {
         button.wait_for_rising_edge().await;
