@@ -28,12 +28,6 @@ A minimal async embedded Rust launchpad for the STM32G474RE microcontroller, usi
    cargo install probe-rs-tools
    ```
 
-   Be sure to add cargo binaries to your PATH in `.zshrc`:
-
-   ```sh
-   export PATH="$PATH:$HOME/.cargo/bin"
-   ```
-
 4. Clone the repository:
 
    ```sh
@@ -56,9 +50,12 @@ defmt log output will appear in your terminal via RTT. The log level is set to `
 ## Notes
 
 - I recommend installing [cargo-binutils](https://crates.io/crates/cargo-binutils) and checking the built firmware via:
-  ```sh
-  cargo size -- -A
-  ```
+    ```sh
+    cargo size -- -A
+    ```
   Ensure `.vector_table` points to flash and `.data` points to RAM.
 - Cargo binaries may not be on your PATH by default on macOS — add them manually if needed.
+   ```sh
+   export PATH="$PATH:$HOME/.cargo/bin"
+   ```
 - Configure your IDE/editor to use ONLY the target architecture for `rust-analyzer`, otherwise it will show errors irrelevant to the microcontroller. Settings for the Zed editor are provided in this repo.
