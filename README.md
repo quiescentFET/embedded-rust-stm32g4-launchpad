@@ -55,6 +55,7 @@ defmt log output will appear in your terminal via RTT. The log level is set to `
     ```
   Ensure `.vector_table` points to flash and `.data` points to RAM.
 - Cargo binaries may not be on your PATH by default on macOS — add them manually if needed.
+  In .zshrc:
    ```sh
    export PATH="$PATH:$HOME/.cargo/bin"
    ```
