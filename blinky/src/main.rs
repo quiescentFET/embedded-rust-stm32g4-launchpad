@@ -41,8 +41,8 @@ async fn main(_spawner: Spawner) {
     let p = embassy_stm32::init(config); // Apply config and init peripherals (do once only)
     info!("config loaded!");
 
-    let button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs); // Init B1 button with external interrupt and its handler
-    let blinky = Output::new(p.PA5, Level::Low, Speed::Low); // Init LD2 LED at PA5
+    let button = ExtiInput::new(p.PC13, p.EXTI13, Pull::None, Irqs); // Init B1 with its corresponding interrupt and handler
+    let blinky = Output::new(p.PA5, Level::Low, Speed::Low); // Init LD2 at PA5
 
     _spawner.spawn(advance_timing(button)).unwrap(); //Spawn timing advancer task
     _spawner.spawn(blink_led(blinky)).unwrap(); // Spawn Blinky task
