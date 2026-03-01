@@ -19,11 +19,14 @@ fn panic() -> ! {
 //*** BINDINGS & VARS ***//
 
 // Init the array of delays (ms) that will be cycled through
-const DELAY_LIST: [u64; 5] = [500, 250, 125, 50, 10];
+const DELAY_LIST: [u32; 5] = [500, 250, 125, 50, 10];
 
 // Init global variable as a mutex to prevent multiple access
+static DELAY: AtomicU32 = AtomicU32::new(500);
+
+// OLD METHOD
 // Cell<u64> allows interior mutability (get/set) within the critical section
-static DELAY: CriticalSectionMutex<Cell<u64>> = CriticalSectionMutex::new(Cell::new(DELAY_LIST[0]));
+// static DELAY: CriticalSectionMutex<Cell<u64>> = CriticalSectionMutex::new(Cell::new(DELAY_LIST[0]));
 
 // Bind EXTI13's interrupts to a handler (for button on PC13 pin)
 bind_interrupts!(struct Irqs {
@@ -34,9 +37,21 @@ bind_interrupts!(struct Irqs {
 //*** MAIN ***//
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
-    // Load config (do once only)
     info!("loading config...");
-    let p = embassy_stm32::init(Default::default()); // Apply config and init peripherals
+
+    // Load default config values
+    let mut config = embassy_stm32::Config::default();
+
+    // Modify config to enable HSE and use as SYSCLK
+    config.rcc.hse = Some(rcc::Hse {
+        freq: embassy_stm32::time::Hertz(24_000_000),
+        mode: rcc::HseMode::Oscillator,
+    });
+    config.rcc.sys = rcc::Sysclk::HSE;
+
+    // Apply config and init peripherals (do once only)
+    let p = embassy_stm32::init(config);
+
     info!("config loaded!");
 
     // Init B1 button with external interrupt and its handler
@@ -64,7 +79,11 @@ async fn blink_led(mut blinky: Output<'static>) {
     // Start blinking
     loop {
         // Read delay value inside a critical section and wait
-        Timer::after_millis(critical_section::with(|cs| DELAY.borrow(cs).get())).await;
+        Timer::after_millis(DELAY.load(Ordering::Relaxed) as u64).await;
+
+        // OLD METHOD
+        // Timer::after_millis(critical_section::with(|cs| DELAY.borrow(cs).get())).await;
+
         blinky.toggle();
     }
 }
@@ -76,12 +95,19 @@ async fn advance_timing(mut button: ExtiInput<'static>) {
     let mut delay_iter = DELAY_LIST.iter().cycle();
 
     // Advance interator to second value since first is already in effect
-    critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
+    DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed);
+
+    // OLD METHOD
+    // critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
 
     loop {
         button.wait_for_rising_edge().await;
         // Write new delay value inside a critical section
-        critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
+        DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed);
+
+        // OLD METHOD
+        // critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
+
         info!("Button pressed!");
     }
 }
