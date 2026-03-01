@@ -8,7 +8,3 @@ pub use embassy_stm32::gpio::{Level, Output, Pull, Speed};
 pub use embassy_stm32::rcc;
 pub use embassy_time::Timer;
 pub use panic_probe as _; // Import panic handler as a side effect
-
-//** OLD METHOD **//
-// pub use embassy_sync::blocking_mutex::CriticalSectionMutex; // use CritSecMutex over Thread/Noop due to interruptions from GPIO (button press)
-// pub use core::cell::Cell; // To allow immutable static to be mutated safely

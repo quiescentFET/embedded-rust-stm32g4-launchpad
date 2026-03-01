@@ -16,14 +16,12 @@ fn panic() -> ! {
 }
 
 //*** BINDINGS & VARS ***//
-const DELAY_LIST: [u32; 5] = [500, 250, 125, 50, 10]; // Init the array of delays (ms) that will be cycled through
-static DELAY: AtomicU32 = AtomicU32::new(500); // Init global variable as an Atomic for safe concurrency
 bind_interrupts!(struct Irqs { // Bind EXTI13's interrupts to a handler (for button on PC13 pin)
     EXTI15_10 => InterruptHandler<embassy_stm32::interrupt::typelevel::EXTI15_10>;
 });
 
-// OLD METHOD
-// static DELAY: CriticalSectionMutex<Cell<u64>> = CriticalSectionMutex::new(Cell::new(DELAY_LIST[0])); // Cell<u64> allows interior mutability (get/set) within the critical section
+const DELAY_LIST: [u32; 5] = [500, 250, 125, 50, 10]; // Init the array of delays (ms) that will be cycled through
+static DELAY: AtomicU32 = AtomicU32::new(500); // Init global variable as an Atomic for safe concurrency
 //*** /BINDINGS & VARS ***//
 
 //*** MAIN ***//
@@ -58,9 +56,6 @@ async fn blink_led(mut blinky: Output<'static>) {
     loop {
         Timer::after_millis(DELAY.load(Ordering::Relaxed) as u64).await; // Read delay value inside a critical section and wait
         blinky.toggle();
-
-        // OLD METHOD
-        // Timer::after_millis(critical_section::with(|cs| DELAY.borrow(cs).get())).await;
     }
 }
 
@@ -69,16 +64,10 @@ async fn advance_timing(mut button: ExtiInput<'static>) {
     let mut delay_iter = DELAY_LIST.iter().cycle(); // Init cycling iterator for delay list
     DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed); // Advance interator to second value since first is already in effect
 
-    // OLD METHOD
-    // critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
-
     loop {
         button.wait_for_falling_edge().await;
         DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed); // Write new delay value inside a critical section
         info!("Button pressed!");
-
-        // OLD METHOD
-        // critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
     }
 }
 //*** /TASKS ***//
