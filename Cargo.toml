@@ -1,3 +1,3 @@
 [workspace]
 resolver = "3"
-members = ["blinky", "blinky_rtc", "clocks", "i2c", "minimal"]
+members = ["blinky", "i2c", "minimal"]
