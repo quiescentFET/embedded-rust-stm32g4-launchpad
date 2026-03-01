@@ -17,7 +17,7 @@ fn panic() -> ! {
 
 //*** BINDINGS & VARS ***//
 const DELAY_LIST: [u32; 5] = [500, 250, 125, 50, 10]; // Init the array of delays (ms) that will be cycled through
-static DELAY: AtomicU32 = AtomicU32::new(500); // Init global variable as a mutex to prevent multiple access
+static DELAY: AtomicU32 = AtomicU32::new(500); // Init global variable as an Atomic for safe concurrency
 bind_interrupts!(struct Irqs { // Bind EXTI13's interrupts to a handler (for button on PC13 pin)
     EXTI15_10 => InterruptHandler<embassy_stm32::interrupt::typelevel::EXTI15_10>;
 });
