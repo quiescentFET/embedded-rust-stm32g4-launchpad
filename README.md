@@ -59,4 +59,4 @@ defmt log output will appear in your terminal via RTT. The log level is set to `
    ```sh
    export PATH="$PATH:$HOME/.cargo/bin"
    ```
-- Configure your IDE/editor to use ONLY the target architecture for `rust-analyzer`, otherwise it will show errors irrelevant to the microcontroller. Settings for the Zed editor are provided in this repo.
+- Configure your IDE/editor's project settings to use ONLY the target architecture for `rust-analyzer`, otherwise it will show errors irrelevant to the microcontroller. Settings for the Zed editor are provided in this repo.
