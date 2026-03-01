@@ -73,7 +73,7 @@ async fn advance_timing(mut button: ExtiInput<'static>) {
     // critical_section::with(|cs| DELAY.borrow(cs).set(*delay_iter.next().unwrap()));
 
     loop {
-        button.wait_for_rising_edge().await;
+        button.wait_for_falling_edge().await;
         DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed); // Write new delay value inside a critical section
         info!("Button pressed!");
 
