@@ -54,19 +54,19 @@ async fn blink_led(mut blinky: Output<'static>) {
 
     // Start blinking
     loop {
-        Timer::after_millis(DELAY.load(Ordering::Relaxed) as u64).await; // Read delay value inside a critical section and wait
+        Timer::after_millis(DELAY.load(Ordering::Relaxed) as u64).await; // Read delay value and wait
         blinky.toggle();
     }
 }
 
 #[embassy_executor::task] // Advance Timing Task (button press)
 async fn advance_timing(mut button: ExtiInput<'static>) {
-    let mut delay_iter = DELAY_LIST.iter().cycle(); // Init cycling iterator for delay list
+    let mut delay_iter = DELAY_LIST.iter().cycle(); // Init cycling (inf. looping) iterator for delay list
     DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed); // Advance interator to second value since first is already in effect
 
     loop {
         button.wait_for_falling_edge().await;
-        DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed); // Write new delay value inside a critical section
+        DELAY.store(*delay_iter.next().unwrap(), Ordering::Relaxed); // Update global variable with new value
         info!("Button pressed!");
     }
 }
